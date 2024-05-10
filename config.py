@@ -1,0 +1,5 @@
+API_KEY = "6993598091:AAGDzE80flObyT8zXqwrZU_LQfCY9hmjqT8"
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = ""
+DB = "telegram_tagihan"

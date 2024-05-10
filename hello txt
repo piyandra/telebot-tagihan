@@ -1,0 +1,11 @@
+if message chat id == yan:
+    if message is quted from:
+        forward mesage is quote:
+    else:
+        do nothing
+else:
+    if message is quopted:
+        send message to quoted
+    else:
+        send message to admin
+
