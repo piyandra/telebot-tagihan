@@ -43,7 +43,7 @@ def delete_db(id):
     db.commit()
 
 def nama(nama, kantor):
-    cursor.execute("SELECT nama, alamat, spk, bd FROM dakol where nama LIKE '%{}%' AND kantor = {} LIMIT 5".format(nama, kantor))
+    cursor.execute("SELECT nama, alamat, spk, bakidebet FROM dakol where nama LIKE '%{}%' AND kantor = {} LIMIT 5".format(nama, kantor))
     hasil = cursor.fetchall()
     return hasil
 
@@ -52,3 +52,4 @@ def cek_pk(nopk):
     cursor.execute("SELECT * FROM dakol WHERE spk = '{}' LIMIT 1".format(nopk))
     hasil = cursor.fetchone()
     return hasil
+
