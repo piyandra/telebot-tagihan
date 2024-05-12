@@ -34,7 +34,7 @@ def addmember(idmember):
     return cursor.rowcount
 
 def cek_aktif(id_tele):
-    cursor.execute("SELECT exp FROM member WHERE id={} LIMIT 1".format(id_tele))
+    cursor.execute("SELECT * FROM member WHERE id={} LIMIT 1".format(id_tele))
     hasil = cursor.fetchone()
     return hasil
 

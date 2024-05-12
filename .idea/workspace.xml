@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fc0554bd-95ec-4128-b68d-5deb3a1bf477" name="Changes" comment="Add Gitignore">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="fc0554bd-95ec-4128-b68d-5deb3a1bf477" name="Changes" comment="Add Schema">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/query.py" beforeDir="false" afterPath="$PROJECT_DIR$/query.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +24,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "piyandra"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/piyandra/telebot-tagihan.git",
+    "accountId": "714b9269-778c-4a0a-a08d-e1794584f612"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -60,6 +73,11 @@
     ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Python\Telegram Bot" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -96,7 +114,7 @@
       <workItem from="1715436268845" duration="6000" />
       <workItem from="1715482748102" duration="1744000" />
       <workItem from="1715494004026" duration="27000" />
-      <workItem from="1715500857243" duration="5038000" />
+      <workItem from="1715500857243" duration="7177000" />
     </task>
     <task id="LOCAL-00001" summary="Sudah Cukupp">
       <option name="closed" value="true" />
@@ -130,7 +148,39 @@
       <option name="project" value="LOCAL" />
       <updated>1715513770034</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Add Gitignore">
+      <option name="closed" value="true" />
+      <created>1715513857074</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715513857074</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Add Gitignore">
+      <option name="closed" value="true" />
+      <created>1715513869224</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1715513869224</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add Schema">
+      <option name="closed" value="true" />
+      <created>1715513886148</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1715513886148</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Add Schema">
+      <option name="closed" value="true" />
+      <created>1715513926854</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1715513926854</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,12 +191,13 @@
     <MESSAGE value="Penambahan Handler Photo dan Hasil Akhir" />
     <MESSAGE value="Refactor" />
     <MESSAGE value="Add Gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Gitignore" />
+    <MESSAGE value="Add Schema" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Schema" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Telegram_Bot$query.coverage" NAME="query Coverage Results" MODIFIED="1715415752390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Telegram_Bot$model.coverage" NAME="model Coverage Results" MODIFIED="1715335604091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Telegram_Bot$testing.coverage" NAME="testing Coverage Results" MODIFIED="1715216260823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Telegram_Bot$main.coverage" NAME="main Coverage Results" MODIFIED="1715513487842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Telegram_Bot$main.coverage" NAME="main Coverage Results" MODIFIED="1715515895110" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
