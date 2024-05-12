@@ -1,0 +1,32 @@
+create table dakol
+(
+    cif     char(8)      not null,
+    wilayah char(4)      not null,
+    cabang  char(4)      not null,
+    spk     char(12)     not null,
+    kantor  char(4)      not null,
+    produk  char(5)      not null,
+    nama    varchar(255) null,
+    alamat  text         null,
+    tgl     char(2)      null,
+    rl      char(10)     null,
+    jt      char(10)     null,
+    kol     char(2)      null,
+    od      char(5)      null,
+    bd      bigint       null,
+    plafond bigint       null,
+    kw_pk   bigint       null,
+    kw_bg   bigint       null,
+    ttl_kw  bigint       null,
+    tg_pk   bigint       null,
+    tg_bg   bigint       null,
+    ttl_tg  bigint       null,
+    ttl_kwj bigint       null,
+    min_pk  bigint       null,
+    min_bg  bigint       null,
+    dd_pk   bigint       null,
+    dd_bg   bigint       null,
+    ao      char(3)      null,
+    ket     text         null
+);
+
