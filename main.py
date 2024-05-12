@@ -48,7 +48,8 @@ def izinkan(message):
                             bot.reply_to(message, "Gagal Ditambahkan")
                     except mysql.connector.errors.IntegrityError:
                         data = query.role(id_tele)
-                        bot.reply_to(message, "Id {} Sudah ada. Berakhir pada {}".format(id_tele, time.ctime(data[2])))
+                        bot.reply_to(message, "Id {} Sudah ada. Berakhir pada {}".format(id_tele,
+                                                                                         time.ctime(data[2])))
                 else:
                     bot.reply_to(message, "Anda Bukan Admin. Tidak Bisa Menambah {}".format(id_tele))
             except IndexError:
@@ -76,11 +77,12 @@ def spk(message):
                 if len(hasil) > 0:
                     for i in hasil:
                         bot.reply_to(message, f'{10 * "-"}\n'
-                                              f'Nama \t\t\t\t: {i[0]}\n'
+                                              f'Nama \t\t\t\t: <b>{i[0]}</b>\n'
                                               f'Alamat \t\t: {i[1]}\n'
-                                              f'SPK \t\t\t\t\t\t\t\t: {i[2]}\n'
+                                              f'SPK \t\t\t\t\t\t\t\t: <code>{i[2]}</code>\n'
                                               f'Plafond \t: {babel.numbers.format_currency(int(i[3]), 'IDR',
-                                                                                           locale="id_ID")}')
+                                                                                           locale="id_ID")}',
+                                     parse_mode="HTML")
                 else:
                     bot.reply_to(message, "Tidak Ditemukan")
             else:
@@ -127,6 +129,59 @@ def lapor_min(message):
         bot.send_message(message.chat.id, message.json['reply_to_message']['forward_from']['id'])
     except KeyError:
         bot.send_message(message.chat.id, "Jangan Dikerjain Bang, Servernya Kecil, Kasian")
+
+
+@bot.message_handler(commands=['info'])
+def info(message):
+
+        data = query.cek_aktif(message.chat.id)  # Cari Data Member
+        if data[0] > time.time():  # Data Member Aktif
+            try:
+                split = message.text.split(' ')  # Query From text
+                no_pk = split[1]  # Query From text/info
+                kueri = query.cek_pk(no_pk)  # Query From text
+                if kueri is not None:  # Hasil Tidak Kosong
+                    bot.send_message(message.chat.id,
+                                     f'{10*"="}\n'
+                                     f'<b>CIF</b> : {kueri[0]}\nNama \t: {kueri[6]}\nNo SPK: {kueri[3]}\nProduk : {kueri[5]}\n'
+                                     f'<b>Alamat</b> : {kueri[7]}\n\n'
+                                     f'{10*"="}\n'
+                                     f'<b>Plafond</b> : {babel.numbers.format_currency(kueri[13], "IDR", locale="id_ID")}\n'
+                                     f'<b>Bakidebet</b> : {babel.numbers.format_currency(kueri[14], "IDR", locale="id_ID")}\n'
+                                     f'<b>RL</b> : {kueri[9]}\n'
+                                     f'<b>JT</b> : {kueri[10]}\n\n'
+                                     f'{10*"="}\n'
+                                     f'<b>Lama Tunggakan</b> : {kueri[12]}\n'
+                                     f'<b>Pokok</b> : {babel.numbers.format_currency(kueri[15], "IDR", locale="id_ID")}\n'
+                                     f'<b>Bunga</b> : {babel.numbers.format_currency(kueri[16], "IDR", locale="id_ID")}\n'
+                                     f'<b>Angsuran</b> : {babel.numbers.format_currency(kueri[17], "IDR", locale="id_ID")}\n'
+                                     f'<b>Tunggakan Pokok</b> : {babel.numbers.format_currency(kueri[18], "IDR", locale="id_ID")}\n'
+                                     f'<b>Tunggakan Bunga</b> : {babel.numbers.format_currency(kueri[19], "IDR", locale="id_ID")}\n\n'
+                                     f'{10*"="}\n'
+                                     f'<b>Minimal Pokok</b>: {babel.numbers.format_currency(kueri[22], "IDR", locale="id_ID")}\n'
+                                     f'<b>Minimal Bunga</b> : {babel.numbers.format_currency(kueri[23], "IDR", locale="id_ID")}\n'
+                                     f'<b>Denda</b> : {babel.numbers.format_currency(kueri[24] + kueri[25], "IDR", locale="id_ID")}\n'
+                                     f'<b>AO</b> : {kueri[26]}', parse_mode='HTML')
+                else:  # Hasil Kosong
+                    bot.reply_to(message, "Kosong Mad")
+            except IndexError:  # Tidak ada Text, Hanya Command
+                bot.send_message(message.chat.id, "Untuk Mencari Detail SPK")
+        else:  # Waktu di DB sudah lewat
+            bot.reply_to(message, "Akun Anda Sudah Tidak Aktif")
+
+
+@bot.message_handler(func=lambda message: True, content_types=['photo'])
+def id_gen(message):
+    if message.chat.id != 6777074285:
+        try:
+            bot.forward_message(chat_id=6777074285, from_chat_id=message.chat.id, message_id=message.id)
+        except ConnectionAbortedError:
+            print("gagal")
+    else:
+        json_data = json.dumps(message.json, indent=4)
+        print(json_data)
+        print(message.text)
+        bot.send_message(chat_id=message.json['reply_to_message']['forward_from']['id'], text=message.text)
 
 
 @bot.message_handler(func=lambda message: True)
