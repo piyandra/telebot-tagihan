@@ -3,4 +3,4 @@ DB_HOST = "localhost"
 DB_USER = "root"
 DB_PASSWORD = ""
 DB = "telegram_tagihan"
-SUPER_USER = 6777074285
+SUPER_USER = 6860012691
