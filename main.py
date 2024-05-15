@@ -26,13 +26,13 @@ def start(message):
                                               "{}\n"
                                               "<b>Silahakan ketik /tolong untuk minta bantuan</b>".format(message.chat.id, time.ctime(data[2], )), parse_mode="HTML")
         else:
-            bot.send_message(message.chat.id, "Akun anda sudah kadaluarsa. Silahkan kirim pesan ke admin untuk mengkatifkan kembali")
+            bot.send_message(message.chat.id, "Akune rika kadaluarsa yung, ora teyeng nganggo. tek hapus bae ya")
             try:
                 query.delete_db(message.chat.id)
             except TypeError:
-                bot.send_message(message.chat.id, "Akun anda sudah tidak ada")
+                bot.send_message(message.chat.id, "Akune rika uis ilang")
     except TypeError:
-        bot.send_message(message.chat.id, "Akun anda sudah tidak ada")
+        bot.send_message(message.chat.id, "Akune rika domongi wis ilang")
 
 
 @bot.message_handler(commands=['izinkan'])
@@ -61,22 +61,22 @@ def izinkan(message):
             bot.reply_to(message, "<strong>Anda Bukan Admin!!!</strong>", parse_mode="HTML")
     except mysql.connector.errors.ProgrammingError as err:
         bot.send_message(message.chat.id, "Kesalahan database, silahkan hubugi admin anda")
-        print(err)
     except mysql.connector.errors.DatabaseError as err:
         bot.send_message(message.chat.id, "Error")
-        print(err)
 
 
 @bot.message_handler(commands=['spk'])
 def spk(message):
     try:
         namanya = message.text.split(' ')
-        nama = namanya[1]
-        kantor = namanya[2]
+        nama = namanya[1:len(namanya)-1]
+        hasil_nama = ' '.join(nama)
+        kantor = namanya[-1]
         data = query.cek_aktif(message.chat.id)
+        print(len(hasil_nama))
         try:
             if data[0] > time.time():
-                hasil = query.nama(nama, kantor)
+                hasil = query.nama(hasil_nama, kantor)
                 if len(hasil) > 0:
                     for i in hasil:
                         bot.reply_to(message, f'{10 * "-"}\n'
@@ -87,22 +87,70 @@ def spk(message):
                                                                                            locale="id_ID")}',
                                      parse_mode="HTML")
                 else:
-                    bot.reply_to(message, "Pencarian dengan No SPK <code>{}</code>\n<b>Tidak Ditemukan pada kantor {}".format(nama, kantor), parse_mode="HTML")
+                    bot.reply_to(message, "Rika nggolet jenenge <b><code>{}</code>\n</b> ora ketemu nang kantor {}\n"
+                                          "Jajal dikoreh koreh maning".format(hasil_nama, kantor), parse_mode="HTML")
             else:
-                bot.reply_to(message, "Akun anda sudah tidak aktif, tidak bisa menggunakan perintah {}".format(message))
+                bot.reply_to(message, "Akune rika uis ora aktif ndean, dadi ora bisa nggolet {}. Jajal jongkongna sing nduwe".format(message))
         except TypeError:
             bot.reply_to(message, "Anda tidak diizinkan menggunakan perintah ini")
     except IndexError:
-        bot.reply_to(message, "Ini Untuk Mencari SPK Berdasarkan Nama dan Kantor\n"
-                              "\nPenggunaan /spk {nama} {kode_kantor}")
+        bot.reply_to(message, "Kie kue nggo nggolet no spk, jajal si\n"
+                              "Kie Carane <b>/spk {nama} {kantor}</b>\n"
+                              "Mesti ketemu, nek ora ketemu ya anu spk mandiri mbok, apa bri", parse_mode="HTML")
+    except mysql.connector.errors.ProgrammingError:
+        bot.send_message(message.chat.id, "Kie kue nggo nggolet no spk, jajal si\n"
+                                          "Kie Carane <b>/spk {nama} {kantor}</b>\n"
+                                          "Mesti ketemu, nek ora ketemu ya anu spk mandiri mbok, apa bri", parse_mode="HTML")
 
+
+@bot.message_handler(commands=['pelunasan'])
+def cek_lunas(message):
+    global bunga_text
+    try:
+        data = message.text.split(' ')
+        spk = data[1]
+        lunas = query.pelunasan(spk)
+        try:
+            if "LM" in lunas[1]:
+                if lunas[15] > 12:
+                    bunga_text = "Penalty B+1"
+                    penalty = lunas[7]
+                else:
+                    bunga_text = "Penalty B+3"
+                    penalty = lunas[7]*3
+            elif "DG" in lunas[1]:
+                bunga_text = "Penalty B+1"
+                penalty = lunas[7]
+            else:
+                penalty = 0
+            bot.send_message(message.chat.id, f'<b>SPK :</b> {lunas[0]}\n'
+                                              f'<b>Produk :</b> {lunas[1]}\n'
+                                              f'<b>Nama :</b> {lunas[2]}\n'
+                                              f'<b>Alamat :</b> {lunas[3]}\n\n'
+                                              f'{10*"="}\n'
+                                              f'<b>Bakidebet :</b> {babel.numbers.format_currency(lunas[4], "IDR", locale="id_ID")}\n'
+                                              f'<b>Tunggakan Bunga :</b> {babel.numbers.format_currency(lunas[5], "IDR", locale="id_ID")}\n'
+                                              f'<b>Penalty {bunga_text} :</b> {babel.numbers.format_currency(penalty, "IDR", locale="id_ID")}\n'
+                                              f'<b>Denda :</b> {babel.numbers.format_currency(lunas[8], "IDR", locale="id_ID")}\n\n'
+                                              f'{10*"="}\n'
+                                              f'<b>Total Pelunasan :</b> {babel.numbers.format_currency(lunas[4]+lunas[5]+penalty+lunas[8], "IDR", locale="id_ID")}', parse_mode="HTML")
+        except TypeError:
+            bot.send_message(message.chat.id, "SPK Tidak Ditemukan. <b>Periksa Nomor SPK ANDA</b>", parse_mode="HTML")
+    except IndexError:
+        bot.send_message(message.chat.id, "Menu ini digunakan untuk menghitung pelunasan kredit\n"
+                                          "<b>Disclaimer:</b>\n"
+                                          "Menu ini tidak bisa menghitung pelunasan dengan kriteria:\n"
+                                          "<b>1. Kredit Potong Gaji</b>\n"
+                                          "<b>2. Kredit Flat Murni dengan jangka waktu 1 tahun atau kurang</b>\n"
+                                          "<b>3. Kredit RC</b>\n"
+                                          "<b>4. Kredit Bank Mandiri</b>", parse_mode="HTML")
 
 @bot.message_handler(commands=['id'])
 def lapor_min(message):
     try:
         bot.send_message(message.chat.id, message.json['reply_to_message']['forward_from']['id'])
     except KeyError:
-        bot.send_message(message.chat.id, "Jangan Dikerjain Bang, Servernya Kecil, Kasian")
+        bot.send_message(message.chat.id, "Ini digunakan untuk mengetahui ID telegram.")
 
 
 @bot.message_handler(commands=['info'])
@@ -138,42 +186,41 @@ def info(message):
                                      f'<b>Denda</b> : {babel.numbers.format_currency(kueri[24] + kueri[25], "IDR", locale="id_ID")}\n'
                                      f'<b>AO</b> : {kueri[26]}', parse_mode='HTML')
                 else:  # Hasil Kosong
-                    bot.reply_to(message, "Kosong Mad. Aja nggoleti sing ora ana")
+                    bot.reply_to(message, "Hasile ora ana, ndean urung cair, ndean sing gawe sing agi mumet. Gawekna Kopi Sit")
             except IndexError:  # Tidak ada Text, Hanya Command
-                bot.send_message(message.chat.id, "Menu ini digunakan untuk mecari detai pinjamaan aktif")
+                bot.send_message(message.chat.id, "Menu Ini digunakan untuk mencari pinjaman yang masih aktif. Jika tidak aktif ya ora ana sinyal\n"
+                                                  "<b>Carane Kaya Kie: </b>"
+                                                  "<b>/info {no pk}</b>\n\n"
+                                                  "Gampang mbok? Sing angel li nek agi ora ana sinyal", parse_mode="HTML")
         else:  # Waktu di DB sudah lewat
-            bot.reply_to(message, "Akun Anda Sudah Tidak Aktif")
+            bot.reply_to(message, "Akun Anda Sudah Tidak Aktif. Aktifin Ulang dong. sewu!!!")
 
 
 @bot.message_handler(func=lambda message: True, content_types=['photo'])
 def id_gen(message):
-    if message.chat.id != 6777074285:
+    if message.chat.id != config.SUPER_USER:
         try:
-            bot.forward_message(chat_id=6777074285, from_chat_id=message.chat.id, message_id=message.id)
+            bot.forward_message(chat_id=config.SUPER_USER, from_chat_id=message.chat.id, message_id=message.id)
         except ConnectionAbortedError:
             print("gagal")
     else:
         json_data = json.dumps(message.json, indent=4)
-        print(json_data)
-        print(message.text)
         bot.send_message(chat_id=message.json['reply_to_message']['forward_from']['id'], text=message.text)
 
 
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda message: True, content_types=['text'])
 def id_gen(message):
-    if message.chat.id != 6777074285:
+    if message.chat.id != config.SUPER_USER:
         try:
-            bot.forward_message(chat_id=6777074285, from_chat_id=message.chat.id, message_id=message.id)
+            bot.forward_message(chat_id=config.SUPER_USER, from_chat_id=message.chat.id, message_id=message.id)
         except ConnectionAbortedError:
             print("gagal")
     else:
         json_data = json.dumps(message.json, indent=4)
-        print(json_data)
-        print(message.text)
         try:
             bot.send_message(chat_id=message.json['reply_to_message']['forward_from']['id'], text=message.text)
         except KeyError:
-            bot.send_message(message.chat.id, "Jangan Ngadi Ngadi")
+            bot.send_message(message.chat.id, "Menune urung digawe. Agi mandan bengel")
 
 while True:
     try:

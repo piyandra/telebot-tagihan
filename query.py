@@ -53,3 +53,14 @@ def cek_pk(nopk):
     hasil = cursor.fetchone()
     return hasil
 
+def insert(file_id):
+    cursor.execute('START TRANSACTION')
+    cursor.execute('DELETE FROM dakol')
+    with open(file_id, 'r') as file:
+        cursor.execute(f'INSERT INTO dakol(cif, wilayah, cabang, spk, kantor, produk, nama, alamat, tgl, rl, jt, kol, od, plafond, bakidebet, kw_pk, kw_bg, ttl_kw, tgg_bg, tgg_pk, ttl_tg, ttl_kwj, min_pk, min_bg, dd_pk, dd_bg, ao, ket) VALUES ({file.strip()})')
+    db.commit()
+
+def pelunasan(spk):
+    cursor.execute('select *, CURRENT_DATE(), DATEDIFF(CURRENT_DATE(), rl)/30 AS data from pelunasan WHERE spk = "{}"'.format(spk))
+    hasil = cursor.fetchone()
+    return hasil
