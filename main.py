@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import query
 import babel.numbers
@@ -5,6 +6,7 @@ import mysql.connector
 import telebot
 import time
 import config
+import model
 
 db = mysql.connector.connect(host=config.DB_HOST,
                              port="3306",
@@ -87,7 +89,7 @@ def spk(message):
                                                                                            locale="id_ID")}',
                                      parse_mode="HTML")
                 else:
-                    bot.reply_to(message, "Rika nggolet jenenge <b><code>{}</code>\n</b> ora ketemu nang kantor {}\n"
+                    bot.reply_to(message, "Rika nggolet jenenge <b><code>{}</code>\n</b>ora ketemu nang kantor {}\n"
                                           "Jajal dikoreh koreh maning".format(hasil_nama, kantor), parse_mode="HTML")
             else:
                 bot.reply_to(message, "Akune rika uis ora aktif ndean, dadi ora bisa nggolet {}. Jajal jongkongna sing nduwe".format(message))
@@ -110,32 +112,56 @@ def cek_lunas(message):
         data = message.text.split(' ')
         spk = data[1]
         lunas = query.pelunasan(spk)
+        hari_ini = datetime.now()
+        string_hari_ini = hari_ini.strftime("%d-%m-%Y")
+        jw = model.months(lunas[2], lunas[1])
+        berjalan = model.months(lunas[1], string_hari_ini)
         try:
-            if "LM" in lunas[1]:
-                if lunas[15] > 12:
-                    bunga_text = "Penalty B+1"
-                    penalty = lunas[7]
+            if "LM" in lunas[4]:
+                if jw > 12:
+                    if berjalan < 12:
+                        penalty = lunas[10]*6
+                        bunga_text = "Penalty B+6"
+                    else:
+                        penalty = lunas[10]*3
+                        bunga_text = "Penalty B+3"
                 else:
-                    bunga_text = "Penalty B+3"
-                    penalty = lunas[7]*3
-            elif "DG" in lunas[1]:
+                    if berjalan < 6:
+                        penalty = lunas[10]*3
+                        bunga_text = "Penalty B+3"
+                    else:
+                        penalty = lunas[10]
+                        bunga_text = "Penalty B+1"
+            elif "DG" in lunas[4]:
                 bunga_text = "Penalty B+1"
-                penalty = lunas[7]
+                penalty = lunas[10]
+            elif "BTP" in lunas[4]:
+                hari_lunas_bt = model.days(lunas[2], string_hari_ini)
+                if hari_lunas_bt < 30:
+                    penalty = 0
+                    bunga_text = "Penalty"
+                else:
+                    penalty = lunas[8]/30*(30-hari_lunas_bt)
+                    bunga_text = 'Penalty Bunga Harian ({} hari)'.format(30-hari_lunas_bt)
             else:
-                penalty = 0
-            bot.send_message(message.chat.id, f'<b>SPK :</b> {lunas[0]}\n'
-                                              f'<b>Produk :</b> {lunas[1]}\n'
-                                              f'<b>Nama :</b> {lunas[2]}\n'
-                                              f'<b>Alamat :</b> {lunas[3]}\n\n'
+                bot.send_message(message.chat.id, "Belum Didukung Program Pemerintah")
+            try:
+                bot.send_message(message.chat.id, f'<b>SPK :</b> {lunas[0]}\n'
+                                              f'<b>Produk :</b> {lunas[4]}\n'
+                                              f'<b>Nama :</b> {lunas[5]}\n'
+                                              f'<b>Alamat :</b> {lunas[6]}\n\n'
                                               f'{10*"="}\n'
-                                              f'<b>Bakidebet :</b> {babel.numbers.format_currency(lunas[4], "IDR", locale="id_ID")}\n'
-                                              f'<b>Tunggakan Bunga :</b> {babel.numbers.format_currency(lunas[5], "IDR", locale="id_ID")}\n'
-                                              f'<b>Penalty {bunga_text} :</b> {babel.numbers.format_currency(penalty, "IDR", locale="id_ID")}\n'
-                                              f'<b>Denda :</b> {babel.numbers.format_currency(lunas[8], "IDR", locale="id_ID")}\n\n'
+                                              f'<b>Bakidebet :</b> {babel.numbers.format_currency(lunas[7], "IDR", locale="id_ID")}\n'
+                                              f'<b>Tunggakan Bunga :</b> {babel.numbers.format_currency(lunas[8], "IDR", locale="id_ID")}\n'
+                                              f'<b>{bunga_text} :</b> {babel.numbers.format_currency(penalty, "IDR", locale="id_ID")}\n'
+                                              f'<b>Denda :</b> {babel.numbers.format_currency(lunas[11], "IDR", locale="id_ID")}\n\n'
                                               f'{10*"="}\n'
-                                              f'<b>Total Pelunasan :</b> {babel.numbers.format_currency(lunas[4]+lunas[5]+penalty+lunas[8], "IDR", locale="id_ID")}', parse_mode="HTML")
-        except TypeError:
+                                              f'<b>Total Pelunasan :</b> {babel.numbers.format_currency(lunas[7]+lunas[8]+penalty+lunas[11], "IDR", locale="id_ID")}', parse_mode="HTML")
+            except NameError:
+                bot.send_message(message.chat.id, "Silakan Hubungi Pak Jokowi ")
+        except TypeError as err:
             bot.send_message(message.chat.id, "SPK Tidak Ditemukan. <b>Periksa Nomor SPK ANDA</b>", parse_mode="HTML")
+            print(err.with_traceback())
     except IndexError:
         bot.send_message(message.chat.id, "Menu ini digunakan untuk menghitung pelunasan kredit\n"
                                           "<b>Disclaimer:</b>\n"
@@ -155,7 +181,6 @@ def lapor_min(message):
 
 @bot.message_handler(commands=['info'])
 def info(message):
-
         data = query.cek_aktif(message.chat.id)  # Cari Data Member
         if data[0] > time.time():  # Data Member Aktif
             try:
