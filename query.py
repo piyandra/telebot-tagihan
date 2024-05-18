@@ -12,19 +12,23 @@ db = mysql.connector.connect(host=config.DB_HOST,
 
 cursor = db.cursor()
 chat = '6860012691'
-def role(chat_id): # Query Role ID
+
+
+def role(chat_id):   # Query Role ID
     cursor.execute("SELECT * FROM member WHERE id= {} LIMIT 1".format(chat_id))
     hasil = cursor.fetchone()
     return hasil
 
+
 def cek_admin(idadmin):
     cursor.execute("SELECT * from member WHERE id= {} AND role = 'admin' LIMIT 1".format(idadmin))
     hashil = cursor.fetchone()
-    if hashil == None:
+    if hashil is not None:
         return False
     else:
         for row in hashil:
             return row
+
 
 def addmember(idmember):
     insert = "INSERT INTO member(id, role, exp) VALUES (%s, 'member', %s)"
@@ -33,10 +37,12 @@ def addmember(idmember):
     db.commit()
     return cursor.rowcount
 
+
 def cek_aktif(id_tele):
     cursor.execute("SELECT * FROM member WHERE id={} LIMIT 1".format(id_tele))
     hasil = cursor.fetchone()
     return hasil
+
 
 def delete_db(id):
     cursor.execute("DELETE FROM member WHERE id={}".format(id))
@@ -53,14 +59,8 @@ def cek_pk(nopk):
     hasil = cursor.fetchone()
     return hasil
 
-def insert(file_id):
-    cursor.execute('START TRANSACTION')
-    cursor.execute('DELETE FROM dakol')
-    with open(file_id, 'r') as file:
-        cursor.execute(f'INSERT INTO dakol(cif, wilayah, cabang, spk, kantor, produk, nama, alamat, tgl, rl, jt, kol, od, plafond, bakidebet, kw_pk, kw_bg, ttl_kw, tgg_bg, tgg_pk, ttl_tg, ttl_kwj, min_pk, min_bg, dd_pk, dd_bg, ao, ket) VALUES ({file.strip()})')
-    db.commit()
 
 def pelunasan(spk):
-    cursor.execute('select *, CURRENT_DATE(), DATEDIFF(CURRENT_DATE(), rl)/30 AS data from pelunasan WHERE spk = "{}"'.format(spk))
+    cursor.execute('select dakol.spk, dakol.rl, dakol.jt, pelunasan.SPK, pelunasan.produk, pelunasan.nama, pelunasan.alamat, pelunasan.bd, pelunasan.kwj_bunga, pelunasan.total, pelunasan.bunga, pelunasan.denda, pelunasan.total_byr, pelunasan.plafond FROM dakol inner join pelunasan on dakol.spk = pelunasan.SPK where dakol.spk = "{}"'.format(spk))
     hasil = cursor.fetchone()
     return hasil
