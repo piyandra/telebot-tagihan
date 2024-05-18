@@ -1,0 +1,60 @@
+@startuml
+entity member {
+    * id : bigint
+    --
+    * role : ENUM('admin', 'member')
+    * exp : bigint
+}
+entity dakol {
+    * cif (char(8))
+    --
+    * wilayah : char(4)
+    * cabang : char(4)
+    * cabang : char(4)
+    * spk : char(12)
+    * kantor : char(4)
+    * produk : char(5)
+    * nama : varchar(255)
+    * alamat : text
+    * tgl : char(2)
+    * rl : varchar(10)
+    * jt : varchar(10)
+    * kol : char(2)
+    * od : char(5)
+    * plafond : bigint
+    * bakidebet : bigint
+    * kw_pk : bigint
+    * kw_bg : bigint
+    * ttl_kw : bigint
+    * min_pk : bigint
+    * min_bg : bigint
+    * dd_pk : bigint
+    * dd_bg : bigint
+    * ao : char(3)
+    *ket : text (NULL)
+    }
+
+entity pelunasan {
+    * SPK : char(12)
+    --
+    * produk : char(5)
+    * nama : varchar(255)
+    * alamat : text
+    * bd : bigint
+    * kwj_bunga : bigint
+    * total : bigint
+    * bunga : bigint
+    * denda : bigint
+    * total_byr : bigint
+    * kantor : char(4)
+    * rl : date
+    * plafond : bigint
+    * ket : text NULL
+}
+
+member ||--o{ pelunasan
+member ||--o{ dakol
+dakol ||--o{ pelunasan
+
+
+@enduml
