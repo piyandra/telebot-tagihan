@@ -258,7 +258,7 @@ def callback_query(call):
                                                                                                                          f'<b>Minimal Pokok</b>: {babel.numbers.format_currency(kueri[22], "IDR", locale="id_ID")}\n'
                                                                                                                          f'<b>Minimal Bunga</b> : {babel.numbers.format_currency(kueri[23], "IDR", locale="id_ID")}\n'
                                                                                                                          f'<b>Denda</b> : {babel.numbers.format_currency(kueri[24] + kueri[25], "IDR", locale="id_ID")}\n'
-                                                                                                                         f'<b>AO</b> : {kueri[26]}', parse_mode='HTML', reply_markup=InlineKeyboardButton(text="Pelunasan", callback_data=spk[1]))
+                                                                                                                         f'<b>AO</b> : {kueri[26]}', parse_mode='HTML', reply_markup=telebot.types.InlineKeyboardButton("Pelunasan", callback_data=spk[1]))
             except telebot.apihelper.ApiException:
                 print("Sudah Kejadian")
     elif spk[0] == "Pelunasan":
@@ -297,6 +297,7 @@ def callback_query(call):
                     bunga_text = 'Penalty Bunga Harian ({} hari)'.format(30-hari_lunas_bt)
             else:
                 bot.edit_message_text(chat_id=call.json['from']['id'],message_id=call.json['message']['message_id'],text="Belum Didukung Program Pemerintah")
+                bot.edit_message_reply_markup(chat_id=call.json['form']['id'], message_id=call.json['message']['message_id'], reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Pelunasan", callback_data=spk[1])]]))
             try:
                 bot.edit_message_text(chat_id=call.json['from']['id'],message_id=call.json['message']['message_id'], text=f'<b>SPK :</b> {lunas[0]}\n'
                                                                                                                           f'<b>Produk :</b> {lunas[4]}\n'
@@ -308,7 +309,8 @@ def callback_query(call):
                                                                                                                           f'<b>{bunga_text} :</b> {babel.numbers.format_currency(penalty, "IDR", locale="id_ID")}\n'
                                                                                                                           f'<b>Denda :</b> {babel.numbers.format_currency(lunas[11], "IDR", locale="id_ID")}\n\n'
                                                                                                                           f'{10*"="}\n'
-                                                                                                                          f'<b>Total Pelunasan :</b> {babel.numbers.format_currency(lunas[7]+lunas[8]+penalty+lunas[11], "IDR", locale="id_ID")}', parse_mode="HTML", reply_markup=InlineKeyboardButton(text="Info", callback_data=spk[1]))
+                                                                                                                          f'<b>Total Pelunasan :</b> {babel.numbers.format_currency(lunas[7]+lunas[8]+penalty+lunas[11], "IDR", locale="id_ID")}', parse_mode="HTML")
+                bot.edit_message_reply_markup(chat_id=call.json['form']['id'], message_id=call.json['message']['message_id'], reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Pelunasan", callback_data=spk[1])]]))
             except NameError:
                 bot.edit_message_text(chat_id=call.json['from']['id'],message_id=call.json['message']['message_id'], text="Silakan Hubungi Pak Jokowi ")
         except TypeError as err:
@@ -316,8 +318,6 @@ def callback_query(call):
             print(err.with_traceback())
     else:
         bot.edit_message_text(chat_id=call.json['from']['id'],message_id=call.json['message']['message_id'],text="Gagal Mendapatkan Data", reply_markup=keyboard_markup(spk[1]))
-
-
 
 
 @bot.message_handler(func=lambda message: True, content_types=['photo'])
