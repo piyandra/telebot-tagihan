@@ -93,8 +93,7 @@ def spk(message):
                                                           f'Nama \t\t\t\t: <b>{i[0]}</b>\n'
                                                           f'Alamat \t\t: {i[1]}\n'
                                                           f'SPK \t\t\t\t\t\t\t\t: <code>{i[2]}</code>\n'
-                                                          f'Plafond \t: {babel.numbers.format_currency(int(i[3]), 'IDR',
-                                                                                                       locale="id_ID")}',
+                                                          f'Plafond \t: {babel.numbers.format_currency(int(i[3]), 'IDR',locale="id_ID")}',
                                          parse_mode="HTML", reply_markup=keyboard_markup(spk=i[2]))
                 else:
                     bot.reply_to(message, "Rika nggolet jenenge <b><code>{}</code>\n</b>ora ketemu nang kantor {}\n"
